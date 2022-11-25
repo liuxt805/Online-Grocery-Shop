@@ -7,6 +7,16 @@ This is a products management and ordering system for an online grocery shop.
 
 ## Technologies
 System is created with:
+- Vue.js
+- ElementUI
+- npm
 
+## Project setup
+```
+npm install
+```
 
-## Setup and Run 
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
