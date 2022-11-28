@@ -32,32 +32,7 @@ export default {
     return {
         input: '',
         showProducts: [],
-        products: [
-            {
-                code: 'CE',
-                name: 'Cheese',
-                imgUrl: 'https://cdn.shopify.com/s/files/1/0206/9470/products/82302-done_1024x1024.jpg?v=1605910613',
-                price: 5.95
-            },
-            {
-                code: 'HM',
-                name: 'Ham',
-                imgUrl: 'https://wintulichs.com/wp-content/uploads/2018/10/Wintulichs-Smallgoods_0000_leg-ham.jpg',
-                price: 7.95
-            },
-            {
-                code: 'SS',
-                name: 'Soy Sauce',
-                imgUrl: 'https://cdn0.woolworths.media/content/wowproductimages/large/004840.jpg',
-                price: 11.95
-            },
-            {
-                code: 'AP',
-                name: 'Apple',
-                imgUrl: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/red-fresh-apple-isolated-on-white-background-royalty-free-image-1627314996.jpg?crop=1.00xw:0.923xh;0,0.0486xh&resize=768:*',
-                price: 3.95
-            },
-        ]
+        products: []
     }
   },
   methods: {
@@ -77,7 +52,6 @@ export default {
     },
     Onclick(product) {
         const data = JSON.stringify(product)
-        console.log(data);
         this.$router.push({
             path: 'productDetail',
             query:{
@@ -86,8 +60,10 @@ export default {
         })
     }
   },
-  mounted() {
+  created() {
+    this.products = this.$store.state.products;
     this.showProducts = this.products;
+    console.log(this.$store.state.cart)
   }
 }
 </script>
