@@ -1,34 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import CommonFunction from '../common/common.js'
 
 Vue.use(Vuex)
-
-function addNum(num1, num2) {
-  var sq1,sq2,m;
-  try {
-      sq1 = num1.toString().split(".")[1].length;
-  }
-  catch (e) {
-      sq1 = 0;
-  }
-  try {
-      sq2 = num2.toString().split(".")[1].length;
-  }
-  catch (e) {
-      sq2 = 0;
-  }
-  m = Math.pow(10,Math.max(sq1, sq2));
-  return (num1 * m + num2 * m) / m;
-}
-function mulNum(arg1,arg2){  
-  var m=0,s1=arg1.toString(),
-  s2=arg2.toString();  
-  try{
-  m+=s1.split(".")[1].length}catch(e){}  
-  try{
-  m+=s2.split(".")[1].length}catch(e){}  
-  return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m
-)}
 
 export default new Vuex.Store({
   state: {
@@ -94,7 +68,7 @@ export default new Vuex.Store({
     totalPrice(state) {
       var totalPrice = 0.00;
       for(var i=0; i < state.cart.length; i++){
-        totalPrice = addNum(totalPrice, state.cart[i]['total']);
+        totalPrice = CommonFunction.addNum(totalPrice, state.cart[i]['total']);
       }
       return totalPrice;
     }
@@ -108,11 +82,11 @@ export default new Vuex.Store({
         var packagingNum = cartProduct.packagingOptions[i].optionNum;
         var packagingPrice = cartProduct.packagingOptions[i].optionPrice;
         if(n >= packagingNum){
-          totalPrice = addNum(totalPrice, mulNum(Math.floor(n / packagingNum), packagingPrice));
+          totalPrice = CommonFunction.addNum(totalPrice, CommonFunction.mulNum(Math.floor(n / packagingNum), packagingPrice));
           n %= packagingNum;
         }
       }
-      totalPrice = addNum(totalPrice, mulNum(n, cartProduct.price));
+      totalPrice = CommonFunction.addNum(totalPrice, CommonFunction.mulNum(n, cartProduct.price));
       cartProduct['total'] = totalPrice.toFixed(2);
     },
 
@@ -126,7 +100,6 @@ export default new Vuex.Store({
       } else{
         var n = cartProduct['num'];
         cartProduct['num'] = n + data.num;
-        console.log(p['num'])
       }
       //update product total price
       this.commit('calculateProductTotal',data.product.code)
@@ -143,7 +116,6 @@ export default new Vuex.Store({
       this.commit('calculateProductTotal',data.code)
 
       localStorage.setItem('cart', JSON.stringify(state.cart))
-      console.log(JSON.parse(localStorage.getItem('cart')))
       console.log(state.cart)
     },
 

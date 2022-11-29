@@ -89,7 +89,7 @@ export default {
   created() {
     this.products = this.$store.state.products;
     this.showProducts = this.products;
-    console.log(this.$store.state.cart)
+    console.log(this.$store.state.cart);
   }
 }
 </script>

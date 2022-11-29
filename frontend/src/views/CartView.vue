@@ -19,12 +19,12 @@
 
                 <div v-if="p.num * p.price > p.total">
                     <span style="text-decoration: line-through ;color: #666666;">
-                        ${{$mulNum(p.num, p.price)}}
+                        ${{CommonFunction.mulNum(p.num, p.price)}}
                     </span>
                     <span style="color: red;">${{p.total}}</span>
                 </div>
                 <div v-else>
-                    <span>${{$mulNum(p.num, p.price)}}</span>
+                    <span>${{CommonFunction.mulNum(p.num, p.price)}}</span>
                 </div>
 
                 <el-button type="text" icon="el-icon-delete" @click="onDelete(p.code)"></el-button>
@@ -47,7 +47,7 @@ export default {
     }
   },
   created() {
-    console.log(this.$store.state.cart)
+    
   },
   methods: {
     changeNum(value, code) {
