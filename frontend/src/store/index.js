@@ -3,6 +3,33 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+function addNum(num1, num2) {
+  var sq1,sq2,m;
+  try {
+      sq1 = num1.toString().split(".")[1].length;
+  }
+  catch (e) {
+      sq1 = 0;
+  }
+  try {
+      sq2 = num2.toString().split(".")[1].length;
+  }
+  catch (e) {
+      sq2 = 0;
+  }
+  m = Math.pow(10,Math.max(sq1, sq2));
+  return (num1 * m + num2 * m) / m;
+}
+function mulNum(arg1,arg2){  
+  var m=0,s1=arg1.toString(),
+  s2=arg2.toString();  
+  try{
+  m+=s1.split(".")[1].length}catch(e){}  
+  try{
+  m+=s2.split(".")[1].length}catch(e){}  
+  return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m
+)}
+
 export default new Vuex.Store({
   state: {
     products:
@@ -11,17 +38,38 @@ export default new Vuex.Store({
         code: 'CE',
         name: 'Cheese',
         imgUrl: 'https://cdn.shopify.com/s/files/1/0206/9470/products/82302-done_1024x1024.jpg?v=1605910613',
-        price: 5.95,
+        price: '5.95',
         description: 'Cheesexxxxxx',
-        packagingOptions: [[3, 14.95], [5, 20.95]]
+        packagingOptions: [
+          {
+            optionNum: '3', 
+            optionPrice: '14.95'
+          }, 
+          {
+            optionNum: '5', 
+            optionPrice: '20.95'
+          }
+        ]
     },
     {
         code: 'HM',
         name: 'Ham',
         imgUrl: 'https://wintulichs.com/wp-content/uploads/2018/10/Wintulichs-Smallgoods_0000_leg-ham.jpg',
-        price: 7.95,
+        price: '7.95',
         description: 'Cheesexxxxxx',
-        packagingOptions: [[2, 13.95], [5, 29.95], [8, 40.95]]
+        packagingOptions: [
+          {
+            optionNum: '2', 
+            optionPrice: '13.95'
+          },
+          {
+            optionNum: '5', 
+            optionPrice: '29.95'
+          },
+          {
+            optionNum: '8', 
+            optionPrice: '40.95'
+          }]
     },
     {
         code: 'SS',
@@ -44,27 +92,28 @@ export default new Vuex.Store({
   },
   getters: {
     totalPrice(state) {
-      var totalPrice = 0;
+      var totalPrice = 0.00;
       for(var i=0; i < state.cart.length; i++){
-        totalPrice += state.cart[i]['total'];
+        totalPrice = addNum(totalPrice, state.cart[i]['total']);
       }
-      return totalPrice.toFixed(2);
+      return totalPrice;
     }
   },
   mutations: {
     calculateProductTotal(state, productCode){
       var cartProduct = state.cart.find(item => {return item.code == productCode});
-      var totalPrice = 0, n = cartProduct.num;
+      var totalPrice = 0.00, n = cartProduct.num;
 
       for(var i = cartProduct.packagingOptions.length - 1; i >= 0; i--) {
-        if(n >= cartProduct.packagingOptions[i][0]){
-          totalPrice += Math.floor(n / cartProduct.packagingOptions[i][0]) * cartProduct.packagingOptions[i][1];
-          console.log(totalPrice, Math.floor(n / cartProduct.packagingOptions[i][0]))
-          n %= cartProduct.packagingOptions[i][0];
+        var packagingNum = cartProduct.packagingOptions[i].optionNum;
+        var packagingPrice = cartProduct.packagingOptions[i].optionPrice;
+        if(n >= packagingNum){
+          totalPrice = addNum(totalPrice, mulNum(Math.floor(n / packagingNum), packagingPrice));
+          n %= packagingNum;
         }
       }
-      totalPrice += n * cartProduct.price;
-      cartProduct['total'] = totalPrice;
+      totalPrice = addNum(totalPrice, mulNum(n, cartProduct.price));
+      cartProduct['total'] = totalPrice.toFixed(2);
     },
 
     addProductToCart(state, data){
@@ -107,6 +156,23 @@ export default new Vuex.Store({
         }
       }
       localStorage.setItem('cart', JSON.stringify(state.cart))
+    },
+    createNewProduct(state, data) {
+      let newProduct = JSON.parse(data);
+      var index = state.products.findIndex((item) => {
+        return item.code == newProduct.code
+      })
+      if(index != -1)
+      state.products[index] = newProduct;
+      else
+      state.products.push(newProduct);
+    },
+    deleteProduct(state, code){
+      var index = state.products.findIndex((item) => {
+        return item.code == code
+      })
+      state.products.splice(index,1)
+      console.log(index)
     }
   },
   actions: {

@@ -18,18 +18,20 @@
                 </el-input-number>
 
                 <div v-if="p.num * p.price > p.total">
-                    <span style="text-decoration: line-through ;color: #666666;">${{p.num * p.price}}</span>
+                    <span style="text-decoration: line-through ;color: #666666;">
+                        ${{$mulNum(p.num, p.price)}}
+                    </span>
                     <span style="color: red;">${{p.total}}</span>
                 </div>
                 <div v-else>
-                    <span>${{p.num * p.price}}</span>
+                    <span>${{$mulNum(p.num, p.price)}}</span>
                 </div>
 
                 <el-button type="text" icon="el-icon-delete" @click="onDelete(p.code)"></el-button>
             </div>
             <el-divider></el-divider>
             <div class="total">
-                Total Price: {{totalPrice}}
+                Total Price: ${{totalPrice}}
                 <el-button type="success">CHECKOUT</el-button>
             </div>
         </div>

@@ -1,11 +1,19 @@
 <template>
     <div class="shopping">
+        <el-button style="float: right; margin-bottom: 20px;" 
+        @click="addNewProduct" icon="el-icon-plus">
+        Add New Product
+        </el-button>
         <div class="search-bar">
             <el-input v-model="input" 
             prefix-icon="el-icon-search" 
             @blur="searchProducts"
             clearable>
-        </el-input>
+            <el-select style="width: 140px;" v-model="select" slot="prepend" placeholder="Search by...">
+                <el-option label="Code" value="code"></el-option>
+                <el-option label="Name" value="name"></el-option>
+            </el-select>
+        </el-input>  
         </div>
     
         <div class="product-list">
@@ -30,24 +38,42 @@ export default {
   name: 'ShopListView',
   data() {
     return {
+        select: '',
         input: '',
         showProducts: [],
         products: []
     }
   },
   methods: {
+    addNewProduct() {
+        this.$router.push('/home/adminProductDetail')
+    },
     searchProducts() {
         if(this.input == '')
         this.showProducts = this.products;
         else{
             this.showProducts = [];
-            this.products.forEach((product) => {
-                var lowercaseName = product.name.toLowerCase();
-                var lowercaseInput = this.input.toLowerCase();
-                if(lowercaseName.search(lowercaseInput) != -1){
-                    this.showProducts.push(product);
-                }
-            })
+            if(this.select == 'name'){
+                this.products.forEach((product) => {
+                    var lowercaseName = product.name.toLowerCase();
+                    var lowercaseInput = this.input.toLowerCase();
+                    if(lowercaseName.search(lowercaseInput) != -1){
+                        this.showProducts.push(product);
+                    }
+                })
+            }else if(this.select == 'code') {
+                this.products.forEach((product) => {
+                    var lowercaseName = product.code.toLowerCase();
+                    var lowercaseInput = this.input.toLowerCase();
+                    if(lowercaseName.search(lowercaseInput) != -1){
+                        this.showProducts.push(product);
+                    }
+                })
+            } else{
+                this.showProducts = this.products;
+                this.$message('please select search key')
+            }
+            
         }
     },
     Onclick(product) {

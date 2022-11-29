@@ -3,6 +3,27 @@
     <el-page-header @back="goBack" title="Product Detail">
     </el-page-header>
 
+    <el-button style="width: 150px; float: right; margin: 20px;"         
+      icon="el-icon-edit"
+      type="success"
+      @click="editProduct">
+      Edit Product
+    </el-button>
+    <el-popconfirm
+      confirm-button-text='Delete'
+      cancel-button-text='Cancel'
+      icon="el-icon-info"
+      icon-color="red"
+      title="Are you sure to delete this product?"
+      @confirm="deleteProduct"
+    >
+      <el-button style="width: 150px; float: right; margin: 20px;" 
+        icon="el-icon-delete"
+        type="danger" slot="reference">
+        Delete Product
+      </el-button>
+    </el-popconfirm>
+    
     <el-card v-if="product">
       <el-row>
         <el-col :span="11">
@@ -23,7 +44,7 @@
             <!--product price-->
             <div class="label">
               <p>Price</p>
-              <span>1 for ${{product.price}}</span>
+              <span>${{product.price}}</span>
             </div>
 
             <!--Ddescription-->
@@ -34,7 +55,7 @@
             <div v-if="showPackagingOption">
               <p>Packaging Options</p>
               <div v-for="item in product.packagingOptions">
-                {{item[0]}} for ${{item[1]}}
+                {{item.optionNum}} for ${{item.optionPrice}}
               </div>
             </div>
 
@@ -70,7 +91,7 @@ export default {
       showPackagingOption: true
     }
   },
-  mounted() {
+  created() {
     let str = decodeURIComponent(this.$route.query.product)
     this.product = JSON.parse(str);
     if(this.product.packagingOptions.length == 0)
@@ -82,7 +103,7 @@ export default {
     goBack() {
       this.$router.push('/home/shopList')
     },
-    async addToCart() {
+    addToCart() {
       console.log(localStorage.getItem('cart'))
       let data = {
         product: this.product,
@@ -95,6 +116,19 @@ export default {
           message: 'Products have been added to cart!',
           type: 'success'
         })
+    },
+    deleteProduct() {
+      this.$store.commit('deleteProduct', this.product.code);
+      this.$message.success('The product has been deleted!')
+      this.goBack();
+    },
+    editProduct() {
+      this.$router.push({
+        path: '/home/adminProductDetail',
+        query: {
+          product: encodeURIComponent(JSON.stringify(this.product))
+        }
+      });
     }
   }
   
