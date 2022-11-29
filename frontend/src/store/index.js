@@ -48,19 +48,19 @@ export default new Vuex.Store({
       for(var i=0; i < state.cart.length; i++){
         totalPrice += state.cart[i]['total'];
       }
-      return totalPrice;
+      return totalPrice.toFixed(2);
     }
   },
   mutations: {
-    calculateProductTotal(state, data){
-      var cartProduct = state.cart.find(item => {return item.code == data.product.code});
+    calculateProductTotal(state, productCode){
+      var cartProduct = state.cart.find(item => {return item.code == productCode});
       var totalPrice = 0, n = cartProduct.num;
 
       for(var i = cartProduct.packagingOptions.length - 1; i >= 0; i--) {
         if(n >= cartProduct.packagingOptions[i][0]){
           totalPrice += Math.floor(n / cartProduct.packagingOptions[i][0]) * cartProduct.packagingOptions[i][1];
+          console.log(totalPrice, Math.floor(n / cartProduct.packagingOptions[i][0]))
           n %= cartProduct.packagingOptions[i][0];
-          console.log(totalPrice, n)
         }
       }
       totalPrice += n * cartProduct.price;
@@ -79,14 +79,22 @@ export default new Vuex.Store({
         cartProduct['num'] = n + data.num;
         console.log(p['num'])
       }
+      //update product total price
+      this.commit('calculateProductTotal',data.product.code)
+
       localStorage.setItem('cart', JSON.stringify(state.cart)) 
-      console.log(localStorage)
+      console.log(state.cart)
     },
 
     changeProductNum(state, data) {
       let cartProduct = state.cart.find(item => {return item.code == data.code});
       cartProduct['num'] = data.value;
+
+      //update product total price
+      this.commit('calculateProductTotal',data.code)
+
       localStorage.setItem('cart', JSON.stringify(state.cart))
+      console.log(JSON.parse(localStorage.getItem('cart')))
       console.log(state.cart)
     },
 
@@ -102,17 +110,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    addProductToCart() {
-
-    }
-    // changeProductNum({commit}, params) {
-    //   setTimeout(() => {
-    //     let res = 'ok';
-    //     if(res == 'ok'){
-    //       commit("changeProductNum", params)
-    //     }
-    //   }, 100)
-    // }
   },
   modules: {
   }

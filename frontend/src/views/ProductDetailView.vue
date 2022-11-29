@@ -30,8 +30,6 @@
             <p>Description</p>
             <span>{{product.description}}</span>
 
-            
-
             <!--product packaging options-->
             <div v-if="showPackagingOption">
               <p>Packaging Options</p>
@@ -91,10 +89,6 @@ export default {
         num: this.num
       }
       this.$store.commit("addProductToCart", data);
-      //this.$store.commit("calculateProductTotal", data);
-      setTimeout(()=>{
-        this.$store.commit("calculateProductTotal", data);
-      },100)
 
       console.log(this.$store.state.cart)
       this.$message({
