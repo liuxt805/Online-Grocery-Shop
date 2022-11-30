@@ -112,10 +112,12 @@ export default {
           code: '',
           description: '',
           price: '',
-          packagingOptions: [{
-            optionNum: '',
-            optionPrice: ''
-          }]
+          packagingOptions: [
+          //   {
+          //   optionNum: '',
+          //   optionPrice: ''
+          // }
+        ]
         }
     }else {
       let str = decodeURIComponent(this.$route.query.product)
@@ -132,20 +134,34 @@ export default {
           this.form.packagingOptions.splice(index, 1)
         }
     },
+    isPackagingOptionsValid(options) {
+      if(options == [])
+      return true;
+      for(var i=0; i<options.length; i++){
+        if(options[i].optionNum == '' || options[i].optionPrice == '' )
+        return false;
+      }
+      return true;
+    },
     submitForm() {
       this.$refs['form'].validate((valid) => {
           if (valid) {
-            let newProduct = {
-              name: this.form.name,
-              code: this.form.code,
-              description: this.form.description,
-              price: this.form.price,
-              imgUrl: '',
-              packagingOptions: this.form.packagingOptions
+            if(this.isPackagingOptionsValid(this.form.packagingOptions)){
+              let newProduct = {
+                name: this.form.name,
+                code: this.form.code,
+                description: this.form.description,
+                price: this.form.price,
+                imgUrl: '',
+                packagingOptions: this.form.packagingOptions
+              }
+              this.$store.commit('createNewProduct', JSON.stringify(newProduct))
+              this.$message.success('New product has been created!')
+              this.goBack();
+            } else {
+              this.$message.error('Some values of packaging options are missing!')
             }
-            this.$store.commit('createNewProduct', JSON.stringify(newProduct))
-            this.$message.success('New product has been created!')
-            this.goBack();
+            
           } else {
             console.log('error submit!!');
             return false;
@@ -162,10 +178,7 @@ export default {
     },
     resetForm() {
       this.$refs['form'].resetFields();
-      this.form.packagingOptions = [{
-        optionNum: '',
-        optionPrice: ''
-      }]
+      this.form.packagingOptions = []
     }
   }
 }

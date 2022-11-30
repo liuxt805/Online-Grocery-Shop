@@ -21,7 +21,11 @@
             v-for="product in showProducts"
             @click="Onclick(product)"
             >
-                <el-image :src="product.imgUrl" lazy> </el-image>
+                <el-image :src="product.imgUrl" lazy> 
+                    <div slot="error" class="image-slot">
+                        <i class="el-icon-picture-outline"></i>
+                    </div>
+                </el-image>
                 <div class="title">
                     <div>{{product.name}}</div>
                     <div>${{product.price}}</div>
@@ -114,7 +118,7 @@ export default {
         border: 1px solid #e5e5e5;
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
         cursor: pointer;
-        img {
+        .el-image {
             width: 150px;
             height: 150px;
             margin-bottom: 10px;
